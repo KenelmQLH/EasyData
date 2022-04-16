@@ -1,6 +1,0 @@
-setup.py
-EasyData/__init__.py
-EasyData.egg-info/PKG-INFO
-EasyData.egg-info/SOURCES.txt
-EasyData.egg-info/dependency_links.txt
-EasyData.egg-info/top_level.txt
