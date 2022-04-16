@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: EasyData
+Version: 0.0.1
+Summary: Short Time Fourier Transform
+Home-page: UNKNOWN
+Author: qinlonghu
+Author-email: qlonghu@mail.ustc.edu.cn
+License: UNKNOWN
+Platform: UNKNOWN
+Requires: numpy
+Requires: pandas
+Requires: plotly
+Requires: matplotlib
+Requires: sklearn
+Requires: umap
+
+UNKNOWN
+
