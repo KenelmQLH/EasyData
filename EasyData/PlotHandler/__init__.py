@@ -1,1 +1,1 @@
-from myploty import *
+from .myploty import *

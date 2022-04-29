@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
 
+
 def set_embedding(text_list, embed_method="tfidf"):
   if embed_method == "tfidf":
     tfidf = TfidfVectorizer(binary=True, max_features=25_000)
