@@ -11,7 +11,6 @@ def bow_2_vec(bow, vocal_size):
         _list[idx] = value
     return _list
 
-
 class SimilarityChecker(object):
     def __init__(self, df, num_sim=50, tokeinzer_method="pure_text"):
         super(SimilarityChecker, self).__init__()
@@ -20,17 +19,16 @@ class SimilarityChecker(object):
         self.df = df
 
     def setting(self, col):
-        documents = self.df[col].values
-        items = [d for d in self.tokeinzer(documents)]
+        self.documents = self.df[col].values
+        items = [d for d in self.tokeinzer(self.documents)]
         self.dictionary = corpora.Dictionary(items)
         self.vocal_size = len(self.dictionary.token2id)
-
         self.corpus = [self.dictionary.doc2bow(text) for text in items]
         # ====================== 相似度矩阵 ============================ #
         self.index = MatrixSimilarity(self.corpus, num_features=len(self.dictionary),
                                       num_best=self.num_sim)
 
-    def find_similars(self, query, show=False, col_q=None, col_s=None):
+    def find_similars(self, query):
         query_item = next(self.tokeinzer([query]))
         query_bow = self.dictionary.doc2bow(query_item)
 
@@ -42,10 +40,10 @@ class SimilarityChecker(object):
             doc_positions.append(doc_position)
             doc_scores.append(doc_score)
 
-        if show:
-            self.show_similars(query, doc_positions, doc_scores, col_q, col_s)
         return doc_positions, doc_scores
 
+
+class SimilarityChecker4Math(SimilarityChecker):
     def show_similars(self, query, positions, scores, col_q, col_s):
         positions, scores = self.find_similars(query)
         # ======================================================== #
