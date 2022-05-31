@@ -48,6 +48,7 @@ def postfix_to_prefix(post_equ, check=False):
         pre_equ = stack.pop()
     return pre_equ
 
+
 def post_solver(post_equ):
     op_list = set(['+', '-', '/', '*', '^'])
     status = True
@@ -84,6 +85,18 @@ def post_solver(post_equ):
         answer = None
         status = False
     return status, answer
+
+
+def number_map(equ, num_list):
+    num_equ = []
+    for token in equ:
+        if "temp_" in token:
+            token = num_list[ord(token[-1]) - ord('a')]
+        elif token == "PI":
+            token = 3.14
+        num_equ.append(token)
+    return num_equ
+
 
 def eval_num_list(str_num_list):
     num_list = list()

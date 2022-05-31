@@ -16,6 +16,7 @@ def show_df_value_counts(df, col="category", topk=None, title=""):
     )
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.show()
+    return fig, cnt
 
 
 def show_df_bar(df, col_x, col_y, color=None, title=""):

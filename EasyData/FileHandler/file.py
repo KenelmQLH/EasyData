@@ -1,6 +1,7 @@
 import json
 import pickle
 import os
+import warnings
 
 def check2mkdir(file_path):
     dir_path = os.path.dirname(file_path)
@@ -35,7 +36,8 @@ def save_json(save_data, output_path):
                 raise Exception("[save_json] 出现错误")
     print("[save_json] num = {}, open_path = {}".format(len(save_data), output_path))
 
-def get_json(open_path):
+
+def get_json(open_path, error_handler="raise"):
     print("[get_json] start : {}".format(open_path))
     load_data = []
     i = 0
@@ -45,8 +47,11 @@ def get_json(open_path):
                 load_data.append(json.loads(line))
                 i += 1
         except Exception as e:
-            print("[Exception] at line {}:\n{}\n".format(i, e))
-            raise Exception("[get_json] 出现错误")
+            if error_handler == "ignore":
+                warnings.warn("[Warning] at line {}:\n{}\n".format(i, e))
+            else:
+                print("[Exception] at line {}:\n{}\n".format(i, e))
+                raise Exception("[get_json] 出现错误")
     print("[get_json] num = {}, open_path = {}".format(len(load_data), open_path))
     return load_data
 
