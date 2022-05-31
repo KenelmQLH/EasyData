@@ -11,7 +11,6 @@ def bow_2_vec(bow, vocal_size):
         _list[idx] = value
     return _list
 
-
 class SimilarityChecker(object):
     def __init__(self, df, tokenizer, num_sim=50):
         super(SimilarityChecker, self).__init__()
