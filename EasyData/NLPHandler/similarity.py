@@ -12,9 +12,9 @@ def bow_2_vec(bow, vocal_size):
     return _list
 
 class SimilarityChecker(object):
-    def __init__(self, df, num_sim=50, tokeinzer_method="pure_text"):
+    def __init__(self, df, tokenizer, num_sim=50):
         super(SimilarityChecker, self).__init__()
-        self.tokeinzer = get_tokenizer(tokeinzer_method)
+        self.tokeinzer = tokenizer
         self.num_sim = num_sim
         self.df = df
 
