@@ -34,6 +34,7 @@ def show_df_bar(df, col_x, col_y, color=None, title=""):
     fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     fig.show()
 
+
 def show_df_sactter(df, x_col, y_col):
     _df = df.sort_values(by=y_col, ascending=False, inplace=False)
     fig = px.scatter(_df, x=x_col, y=y_col, trendline="ols")
