@@ -19,7 +19,6 @@ def is_chinese(uchar):
     else:
         return False
 
-
 # c.isalnum()
 # c.isspace()
 # set(string.punctuation): 

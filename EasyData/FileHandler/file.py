@@ -4,9 +4,19 @@ import os
 import warnings
 
 def check2mkdir(file_path):
+    "note: file_path must be like path/to/dir/filename"
     dir_path = os.path.dirname(file_path)
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
+
+def read_json(open_path):
+    return json.load(open(open_path, 'r', encoding='utf-8'))
+
+def write_json(save_data, output_path):
+    check2mkdir(output_path)
+    with open(output_path, 'w+', encoding="utf-8") as f:
+        f.write(json.dumps(save_data, indent=4, ensure_ascii=False))
+
 
 def save_pkl(save_data, output_path):
     check2mkdir(output_path)
@@ -22,23 +32,8 @@ def get_pkl(open_path):
     print("[get_pkl] num = {}, open_path = {}".format(len(load_data), open_path))
     return load_data
 
-
-def save_json(save_data, output_path):
-    print("[save_json] start : {}".format(output_path))
-    check2mkdir(output_path)
-    with open(output_path,'w+',encoding="utf-8") as f:
-        for row_dic in save_data:
-            try:
-                jsondata=json.dumps(row_dic, ensure_ascii=False)
-                f.write(jsondata + "\n")
-            except Exception as e:
-                print("[Exception] at {}:\n{}\n".format(row_dic, e))
-                raise Exception("[save_json] 出现错误")
-    print("[save_json] num = {}, open_path = {}".format(len(save_data), output_path))
-
-
-def get_json(open_path, error_handler="raise"):
-    print("[get_json] start : {}".format(open_path))
+def read_line_json(open_path, error_handler="raise"):
+    print("[read_line_json] start : {}".format(open_path))
     load_data = []
     i = 0
     with open(open_path, 'r', encoding="utf-8") as f:
@@ -51,22 +46,44 @@ def get_json(open_path, error_handler="raise"):
                 warnings.warn("[Warning] at line {}:\n{}\n".format(i, e))
             else:
                 print("[Exception] at line {}:\n{}\n".format(i, e))
-                raise Exception("[get_json] 出现错误")
-    print("[get_json] num = {}, open_path = {}".format(len(load_data), open_path))
+                raise Exception("[read_line_json] 出现错误")
+    print("[read_line_json] num = {}, open_path = {}".format(len(load_data), open_path))
     return load_data
 
+def write_line_json(save_data, output_path):
+    print("[write_line_json] start : {}".format(output_path))
+    check2mkdir(output_path)
+    with open(output_path,'w+',encoding="utf-8") as f:
+        for row_dic in save_data:
+            try:
+                jsondata=json.dumps(row_dic, ensure_ascii=False)
+                f.write(jsondata + "\n")
+            except Exception as e:
+                print("[Exception] at {}:\n{}\n".format(row_dic, e))
+                raise Exception("[write_line_json] 出现错误")
+    print("[write_line_json] num = {}, open_path = {}".format(len(save_data), output_path))
 
-def merge_json_files(file_paths,output_path):
+
+
+def merge_json_files(file_paths, output_path, line_format=True):
     print("="*100)
     check2mkdir(output_path)
+    
     result = []
     for file_path in file_paths:
         if not os.path.exists(file_path):
             print("[warning] {} not exists".format(file_path))
             continue
-        json_data = get_json(file_path)
+        if line_format is True:
+            json_data = read_line_json(file_path)
+        else:
+            json_data = read_json(file_path)
         result.extend(json_data)
-    save_json(result, output_path)
+    if line_format is True:
+        write_line_json(result, output_path)
+    else:
+        write_json(result, output_path)
+    
     print("="*100)
     print("[merge_json_files] finish merge => {}".format(output_path))
 
@@ -86,13 +103,3 @@ def merge_pkl_files(file_paths,output_path,datatype='List'):
     save_pkl(all_data, output_path)
     print("="*100)
     print("[merge_pkl_files] finish merge => {}".format(output_path))
-
-
-# if __name__ == '__main__':
-#     test_path = "/home/qlh/data_pretrain/data/test2/test_funciton.py"
-#     check2mkdir(test_path)
-#     test_path = "/home/qlh/data_pretrain/data/test3"
-#     check2mkdir(test_path)
-#     test_path = "/home/qlh/data_pretrain/data/test4/"
-#     check2mkdir(test_path)
-
