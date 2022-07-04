@@ -1,4 +1,6 @@
 # -*- encoding:utf-8 -*-
+import re
+COMMON_NUM_PATTERN = re.compile(r"\d*\(\d+/\d+\)\d*|\d+\.\d+%?|\d+%?")
 
 def infix_to_postfix(expression):
     st = list()
@@ -26,6 +28,7 @@ def infix_to_postfix(expression):
     while len(st) > 0:
         res.append(st.pop())
     return res
+
 
 def postfix_to_prefix(post_equ, check=False):
     op_list = set(["+", "-", "*", "/", "^"])
@@ -106,3 +109,7 @@ def eval_num_list(str_num_list):
         else:
             num_list.append(eval(item))
     return num_list
+
+
+def tag_w_num(text, pattern=COMMON_NUM_PATTERN, tag="[NUM]"):
+    return re.sub(pattern, tag, text)
