@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 import re
-COMMON_NUM_PATTERN = re.compile(r"\d*\(\d+/\d+\)\d*|\d+\.\d+%?|\d+%?")
+from .common import COMMON_NUM_PATTERN
 
 def infix_to_postfix(expression):
     st = list()
@@ -29,7 +29,6 @@ def infix_to_postfix(expression):
         res.append(st.pop())
     return res
 
-
 def postfix_to_prefix(post_equ, check=False):
     op_list = set(["+", "-", "*", "/", "^"])
     stack = []
@@ -50,7 +49,6 @@ def postfix_to_prefix(post_equ, check=False):
     else:
         pre_equ = stack.pop()
     return pre_equ
-
 
 def post_solver(post_equ):
     op_list = set(['+', '-', '/', '*', '^'])
@@ -113,3 +111,88 @@ def eval_num_list(str_num_list):
 
 def tag_w_num(text, pattern=COMMON_NUM_PATTERN, tag="[NUM]"):
     return re.sub(pattern, tag, text)
+
+def extract_num(text, pattern=COMMON_NUM_PATTERN):
+    nums = re.findall(pattern, text)
+    return nums
+
+
+from copy import deepcopy
+
+def transfer_num(data):
+    pattern = re.compile(r"\d*\(\d+/\d+\)\d*|\d+\.\d+%?|\d+%?")
+    n_data = list()
+    for d in data:
+        nums = []
+        input_seq = []
+        seg = d["segmented_text"].strip().split(" ")
+        equations = d["equation"][2:]
+
+        n_num = 0
+        for s in seg:
+            pos = re.search(pattern, s)
+            if pos and pos.start() == 0:
+                nums.append(s[pos.start(): pos.end()])
+                input_seq.append(f"num{str(n_num)}")
+                n_num += 1
+                if pos.end() < len(s):
+                    input_seq.append(s[pos.end():])
+            else:
+                input_seq.append(s)
+
+        nums_fraction = []
+        for num in nums:
+            if re.search(r"\d*\(\d+/\d+\)\d*", num):
+                nums_fraction.append(num)
+        nums_fraction = sorted(nums_fraction, key=lambda x: len(x), reverse=True)
+
+        # seg the equation and tag the num
+        def seg_and_tag(st):
+            res = []
+            for n in nums_fraction:
+                if n in st:
+                    p_start = st.find(n)
+                    p_end = p_start + len(n)
+                    if p_start > 0:
+                        res += seg_and_tag(st[:p_start])
+                    if n in nums:
+                        res.append(f"num{str(nums.index(n))}")
+
+                        res.append(n)
+                    if p_end < len(st):
+                        res += seg_and_tag(st[p_end:])
+                    return res
+            pos_st = re.search(r"\d+\.\d+%?|\d+%?", st)
+            if pos_st:
+                p_start = pos_st.start()
+                p_end = pos_st.end()
+                if p_start > 0:
+                    res += seg_and_tag(st[:p_start])
+                st_num = st[p_start:p_end]
+                if st_num in nums:
+                    res.append(f"num{str(nums.index(st_num))}")
+                else:
+                    res.append(st_num)
+                if p_end < len(st):
+                    res += seg_and_tag(st[p_end:])
+                return res
+            for ss in st:
+                res.append(ss)
+            return res
+
+        out_seq = seg_and_tag(equations) # 中序表达式
+        postfix = infix_to_postfix(out_seq)
+        f_nums = eval_num_list(nums)
+        n_d = deepcopy(d)
+        n_d['id'] = d['id']
+        n_d['equation'] = d['equation']
+
+        n_d['text'] = ' '.join(input_seq)
+        n_d['equation_infix_template'] = ' '.join(out_seq)  # ['x', '='] + 
+        n_d['equation_post_template'] = ' '.join(postfix)  # ['x', '='] + 
+        n_d['num_list'] = f_nums
+
+        n_data.append(n_d)
+        if post_solver(number_map(postfix, f_nums)) is None:
+            print(d['id'])
+    return n_data

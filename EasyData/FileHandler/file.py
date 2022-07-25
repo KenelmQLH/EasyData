@@ -10,12 +10,15 @@ def check2mkdir(file_path):
         os.makedirs(dir_path)
 
 def read_json(open_path):
-    return json.load(open(open_path, 'r', encoding='utf-8'))
+    load_data = json.load(open(open_path, 'r', encoding='utf-8'))
+    print("[read_json] num = {}, open_path = {}".format(len(load_data), open_path))
+    return load_data
 
 def write_json(save_data, output_path):
     check2mkdir(output_path)
     with open(output_path, 'w+', encoding="utf-8") as f:
         f.write(json.dumps(save_data, indent=4, ensure_ascii=False))
+    print("[write_json] num = {}, save_path = {}".format(len(save_data), output_path))
 
 
 def save_pkl(save_data, output_path):

@@ -1,5 +1,3 @@
-from EduNLP.Pretrain import BertTokenizer
-from utils import read_json, write_json
 from multiprocessing import Process, Pool
 import multiprocessing
 from datetime import datetime

@@ -18,13 +18,6 @@ def getTime():
     rq = time.strftime('%Y-%m-%d-%H:%M', time.localtime(time.time()))
     return rq
 
-@contextmanager
-def compute_time():
-    start_time = datetime
-    yield
-    end_time = datetime
-    print(f"[]")
-
 # -------------------------------------------------------------- #
 # 装饰器
 # -------------------------------------------------------------- #
@@ -39,6 +32,13 @@ def log_func_info(level):
         return wrapper
 
     return decorator
+
+@contextmanager
+def compute_time():
+    start_time = datetime.now()
+    yield
+    end_time = datetime.now()
+    print(f"[compute_time]: ", end_time-start_time)
 
 """
 Example:

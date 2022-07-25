@@ -1,4 +1,4 @@
-from umap import UMAP
+# from umap import UMAP
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
@@ -19,11 +19,12 @@ def set_embedding(text_list, embed_method="tfidf"):
 
 
 
+# def dim_reduction(text_embeddings):
+#   _umap = UMAP()
+#   embed_2d = _umap.fit_transform(text_embeddings)  # numpy.ndarray
+#   return embed_2d
 def dim_reduction(text_embeddings):
-  _umap = UMAP()
-  embed_2d = _umap.fit_transform(text_embeddings)  # numpy.ndarray
-  return embed_2d
-
+    pass
 
 def set_cluster(df, col, embed_method="tfidf", N_TOPIC=6, text_embeddings=None):
     # ======================== 编码 ========================== #

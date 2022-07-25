@@ -1,11 +1,10 @@
 # ====================== 设置数据预料 ============================ #
 from gensim.similarities import MatrixSimilarity
 from gensim import corpora
-from EduNLP.Tokenizer import get_tokenizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def bow_2_vec(bow, vocal_size):
+def bow__vec(bow, vocal_size):
     _list = [0] * vocal_size
     for idx, value in bow:
         _list[idx] = value
@@ -57,10 +56,10 @@ class SimilarityChecker4Math(SimilarityChecker):
             s = s[:-1] if s[-1] == "|" else s  # 过滤相同的解题公式
             if s not in solution_set:
                 # 按题目相似度过滤
-                p_bow_vec = bow_2_vec(self.dictionary.doc2bow(
+                p_bow_vec = bow__vec(self.dictionary.doc2bow(
                     next(self.tokeinzer(p))), self.vocal_size)
                 max_sim = max(map(lambda x: cosine_similarity([p_bow_vec],
-                                                              [bow_2_vec(self.dictionary.doc2bow(
+                                                              [bow__vec(self.dictionary.doc2bow(
                                                                   next(self.tokeinzer(x))), self.vocal_size)]
                                                               )[0][0],
                                   problems_set)
