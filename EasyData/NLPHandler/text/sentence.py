@@ -32,14 +32,13 @@ def pad_mixed_language_by_space(sentence, language="mixed", split_puncs=True, sp
                     # 分隔非汉字
                     clean_english = pad_mixed_language_by_space(seg_english, language="english", split_puncs=split_puncs)
                     seg_english = ""
-
                     clean_para = clean_para.strip() + " " + clean_english.strip() + " "
+
+                if space_chinese_char:
+                    # 分隔汉字
+                    clean_para = clean_para.strip() + " " + char + " "
                 else:
-                    if space_chinese_char:
-                        # 分隔汉字
-                        clean_para = clean_para.strip() + " " + char + " "
-                    else:
-                        clean_para += char
+                    clean_para += char
         else:
             # 处理英文片段
             if split_puncs and char in punctuations:

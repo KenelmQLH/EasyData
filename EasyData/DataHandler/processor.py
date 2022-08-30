@@ -14,7 +14,7 @@ class ParallelHandlerForIterable(object):
         self.num_processor = num_processor
         self.log_details = log_details
 
-    def _process(self, n, map_func, part_items, argc=None):
+    def _process(self, n, map_func, part_items, argc=()):
         if self.log_details:
             start_time = datetime.now()
             print(f"子进程{n}[{os.getpid()}]开始: {start_time}")
@@ -29,8 +29,8 @@ class ParallelHandlerForIterable(object):
             print(f"子进程{n}[{os.getpid()}]结束: {end_time}（共花费 {end_time-start_time} s )")
         return (n, ret_items) 
 
-    def run(self, items, map_func, argc=None):
-
+    def run(self, items, map_func, argc=()):
+        
         _items = deepcopy(items)
         total_size = len(_items)
         part_size = int(total_size / self.num_processor)

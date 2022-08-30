@@ -109,8 +109,12 @@ def eval_num_list(str_num_list):
     return num_list
 
 
-def tag_w_num(text, pattern=COMMON_NUM_PATTERN, tag="[NUM]"):
+def replace_num_with_tag(text, pattern=COMMON_NUM_PATTERN, tag="[NUM]"):
     return re.sub(pattern, tag, text)
+
+def pad_num_with_space(text, pattern=COMMON_NUM_PATTERN):
+    return re.sub(pattern, r" \1  ", text)
+
 
 def extract_num(text, pattern=COMMON_NUM_PATTERN):
     nums = re.findall(pattern, text)
