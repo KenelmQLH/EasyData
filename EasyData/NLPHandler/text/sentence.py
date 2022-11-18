@@ -5,7 +5,7 @@ import nltk
 import pysbd
 import re
 import string
-from typing import Tuple
+from typing import Tuple, Union
 from .common import is_alphabet, is_chinese
 
 DEFAULT_PUNCTUATIONS = ["。", "！", "!", ".", "？", "?", ",", "，", ";", "\n"]
@@ -16,10 +16,15 @@ ALL_PUNCTUATIONS = en_punctuation + zh_punctuation # 注意：不含有中文标
 # TODO: Need to hangle special punctuation like ... and .
 # TODO: Can re.split work more elegently ?
 
-def pad_mixed_language_by_space(sentence, language="mixed", split_puncs=True, space_chinese_char=False):
+def pad_mixed_language_by_space(sentence, language="mixed", split_puncs=True, space_chinese_char=False, punctuations: Union[list, str] = "default"):
     assert language in ["mixed", "english"]
     clean_para = ""
-    punctuations = set(ALL_PUNCTUATIONS)
+    if punctuations == "default":
+        punctuations = set(DEFAULT_PUNCTUATIONS)
+    elif punctuations == "all":
+        punctuations = set(ALL_PUNCTUATIONS)
+    else:
+        punctuations = set() if not punctuations else punctuations
     seg_english = ""
     for char in sentence:
         # 中英文混合

@@ -1,2 +1,8 @@
 umap-learn
 baize
+pymysql
+gensim
+plotly
+jieba
+zhon
+pysbd

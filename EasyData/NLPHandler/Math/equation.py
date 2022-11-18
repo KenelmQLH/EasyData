@@ -113,7 +113,7 @@ def replace_num_with_tag(text, pattern=COMMON_NUM_PATTERN, tag="[NUM]"):
     return re.sub(pattern, tag, text)
 
 def pad_num_with_space(text, pattern=COMMON_NUM_PATTERN):
-    return re.sub(pattern, r" \1  ", text)
+    return re.sub(pattern, r" \1 ", text)
 
 
 def extract_num(text, pattern=COMMON_NUM_PATTERN):

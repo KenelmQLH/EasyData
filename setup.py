@@ -11,6 +11,7 @@ setup(name='EasyData',
         'matplotlib',
         'sklearn',
         'umap',
+        'gensim',
       ], # 定义依赖哪些模块
       packages=['EasyData']  #指定py文件，注意不要后缀
       )
