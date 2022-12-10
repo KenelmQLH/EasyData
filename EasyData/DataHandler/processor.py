@@ -14,14 +14,14 @@ class ParallelHandlerForIterable(object):
         self.num_processor = num_processor
         self.log_details = log_details
 
-    def _process(self, n, map_func, part_items, argc=()):
+    def _process_sample(self, n, map_sample_func, part_items, argc=()):
         if self.log_details:
             start_time = datetime.now()
             print(f"子进程{n}[{os.getpid()}]开始: {start_time}")
         
         ret_items = []
         for item in part_items:
-            ret_item = map_func(item, *argc)
+            ret_item = map_sample_func(item, *argc)
             ret_items.append(ret_item)
         
         if self.log_details:
@@ -29,10 +29,23 @@ class ParallelHandlerForIterable(object):
             print(f"子进程{n}[{os.getpid()}]结束: {end_time}（共花费 {end_time-start_time} s )")
         return (n, ret_items) 
 
-    def run(self, items, map_func, argc=()):
+    def _process_part(self, n, map_part_func, part_items, argc=()):
+        if self.log_details:
+            start_time = datetime.now()
+            print(f"子进程{n}[{os.getpid()}]开始: {start_time}")
         
-        _items = deepcopy(items)
-        total_size = len(_items)
+        ret_items = map_part_func(part_items, *argc)
+
+        if self.log_details:
+            end_time = datetime.now()
+            print(f"子进程{n}[{os.getpid()}]结束: {end_time}（共花费 {end_time-start_time} s )")
+        return (n, ret_items) 
+    
+    def run(self, items, map_func, argc=(), map_action="sample"):
+        if map_action not in ["sample", "part"]:
+            raise ValueError("map_action should be one from ['sample', 'part'] !")
+
+        total_size = len(items)
         part_size = int(total_size / self.num_processor)
         
         if self.log_details:
@@ -45,10 +58,15 @@ class ParallelHandlerForIterable(object):
         for i in range(self.num_processor):
             start = i*part_size
             end = (i+1)*part_size if (i+1)*part_size < total_size else total_size
-            part_items = _items[start: end]
-            workers.append(
-                pool.apply_async(self._process, (i, map_func, part_items, argc))
-            )
+            part_items = deepcopy(items[start: end])
+            if map_action == "sample":
+                workers.append(
+                    pool.apply_async(self._process_sample, (i, map_func, part_items, argc))
+                )
+            else:
+                workers.append(
+                    pool.apply_async(self._process_part, (i, map_func, part_items, argc))
+                )
 
         pool.close() # # 关闭进程池，表示不能再往进程池中添加进程，需要在join之前调用
         #进程阻塞
