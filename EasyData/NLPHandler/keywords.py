@@ -41,12 +41,13 @@ class gensimTfidf(object):
         
         tfidf_pairs = sorted(tfidf_pairs, key=lambda x: x[1], reverse=True)
 
-        top_k = min(top_k, int(len(bow_item)/2) )
+        top_k = min(top_k, len(bow_item) )
 
-        keywords = [self.dct.get(k) for k,v in tfidf_pairs[:top_k]]
-        if filter_key:
+        keywords = [self.dct.get(k) for k,v in tfidf_pairs]
+        if filter_key is not None:
             keywords =  [k for k in keywords if not filter_key(k)]
         
+        keywords = keywords[:top_k]
         return keywords
 
     def get_corpus_top(self, top_k=10):
