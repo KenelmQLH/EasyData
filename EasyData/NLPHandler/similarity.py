@@ -11,35 +11,36 @@ def bow__vec(bow, vocal_size):
     return _list
 
 class SimilarityChecker(object):
-    def __init__(self, df, tokenizer, num_sim=50):
+    def __init__(self, token_documents, num_sim=50):
         super(SimilarityChecker, self).__init__()
-        self.tokeinzer = tokenizer
         self.num_sim = num_sim
-        self.df = df
+        self.token_documents = token_documents
+        self.setting()
 
-    def setting(self, col):
-        self.documents = self.df[col].values
-        items = [d for d in self.tokeinzer(self.documents)]
+    def setting(self):
+        items = self.token_documents
         self.dictionary = corpora.Dictionary(items)
         self.vocal_size = len(self.dictionary.token2id)
         self.corpus = [self.dictionary.doc2bow(text) for text in items]
         # ====================== 相似度矩阵 ============================ #
-        self.index = MatrixSimilarity(self.corpus, num_features=len(self.dictionary),
+        self.sim_index = MatrixSimilarity(self.corpus, num_features=len(self.dictionary),
                                       num_best=self.num_sim)
 
-    def find_similars(self, query):
-        query_item = next(self.tokeinzer([query]))
-        query_bow = self.dictionary.doc2bow(query_item)
+    def find_similars(self, token_query):
+        query_bow = self.dictionary.doc2bow(token_query)
 
-        sims = self.index[query_bow]
+        sims = self.sim_index[query_bow]
 
         sims = sorted(sims, key=lambda item: -item[1])
-        doc_positions, doc_scores = [], []
-        for doc_position, doc_score in sims:
-            doc_positions.append(doc_position)
-            doc_scores.append(doc_score)
+        res = []
+        for doc_i, doc_sim in sims:
+            res.append({
+                "idx": doc_i,
+                "doc": " ".join(self.token_documents[ doc_i ]),
+                "doc_sim": doc_sim
+            })
 
-        return doc_positions, doc_scores
+        return res
 
 
 class SimilarityChecker4Math(SimilarityChecker):
