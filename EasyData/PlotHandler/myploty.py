@@ -18,6 +18,10 @@ def show_df_value_counts(df, col="category", topk=None, title=""):
     fig.show()
     return fig, cnt
 
+def show_df_histogram(df, col_x, color=None, title=""):
+    fig = px.histogram(df, x=col_x, nbins=20)
+    fig.show()
+
 
 def show_df_bar(df, col_x, col_y, color=None, title=""):
     if color is not None:

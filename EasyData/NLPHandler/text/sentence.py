@@ -28,7 +28,7 @@ def pad_mixed_language_by_space(sentence, language="mixed", split_puncs=True, sp
     seg_english = ""
     for char in sentence:
         # 中英文混合
-        if language is "mixed":
+        if language == "mixed":
             if not is_chinese(char):
                 seg_english += char
             # 处理中文字符
